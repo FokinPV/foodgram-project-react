@@ -40,10 +40,10 @@ jobs:
             repository:  yourjesus/foodgram_backend:v1
             file: backend/Dockerfile
   
-  build_backend:
+  build_frontend:
     name: build_frontend
     runs-on: ubuntu-latest
-    needs: tests
+    needs: build_frontend
     if: github.ref == 'refs/heads/master'
     steps:
       - name: Check out the repo
