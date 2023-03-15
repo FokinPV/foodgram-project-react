@@ -85,15 +85,15 @@ scp default.conf <username>@<ip_address>:/home/<username>/nginx/default.conf
 ## После успешного запуска контейнеров:
 Создать миграции:
 
-docker-compose exec web python manage.py makemigrations
+docker-compose exec backend python manage.py makemigrations
 
 выполнить миграции:
 
-docker-compose exec web python manage.py migrate
+docker-compose exec backend python manage.py migrate
 
 Создать суперюзера:
 
-docker-compose exec web python manage.py createsuperuser
+docker-compose exec backend python manage.py createsuperuser
 
 Собрать статику:
 
