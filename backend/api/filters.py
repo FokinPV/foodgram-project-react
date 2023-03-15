@@ -41,4 +41,3 @@ class RecipeFilter(filters.FilterSet):
             if value:
                 return queryset.filter(pk__in=pk)
             return queryset
- 

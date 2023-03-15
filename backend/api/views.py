@@ -18,7 +18,7 @@ from .mixins import CustomViewSet
 from .serializers import (FavoriteSerializer, GetRecipeSerializer,
                           IngredientSerializer, RecipeCreateSerializer,
                           ShoppingListSerializer, TagSerializer,
-                          CreateUserSerializer,  FollowSerializer)
+                          CreateUserSerializer, FollowSerializer)
 
 User = get_user_model()
 
