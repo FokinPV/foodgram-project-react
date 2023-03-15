@@ -38,4 +38,4 @@ class RecipeAdmin(admin.ModelAdmin):
         favorited_count = Favorite.objects.filter(recipe=obj).count()
         return favorited_count
 
-    favorited.short_description = 'Is in favorite'
+    favorited.short_description = 'В избранном'

@@ -64,7 +64,7 @@ class Follow(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'author'],
-                name='unique_follow',
+                name='уникальный подписчик',
             )
         ]
         ordering = ('author_id',)

@@ -84,7 +84,7 @@ class Recipe(models.Model):
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,
-        verbose_name='Date of publish',
+        verbose_name='Дата публикации',
     )
 
     class Meta:
@@ -112,12 +112,12 @@ class IngredInRecipe(models.Model):
         verbose_name='Amount',)
 
     class Meta:
-        verbose_name = 'Количество ингридиентов'
-        verbose_name_plural = 'Количество ингридиентов'
+        verbose_name = 'Количество ингредиентов'
+        verbose_name_plural = 'Количество ингредиентов'
         constraints = [
             models.UniqueConstraint(
                 fields=('ingredient', 'recipe',),
-                name='unique ingredient in recipe'
+                name='уникальный ингредиент в рецепте'
             )
         ]
 
@@ -141,11 +141,11 @@ class Favorite(models.Model):
 
     class Meta:
         verbose_name = 'Избранный рецепт'
-        verbose_name_plural = 'Favorite Recipes'
+        verbose_name_plural = 'Избранные рецепты'
         constraints = (
             models.UniqueConstraint(
                 fields=('user', 'recipe'),
-                name='unique favorite'),
+                name='уникальный избранный'),
         )
 
     def __str__(self):
@@ -167,12 +167,12 @@ class ShoppingList(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Recipe in cart'
-        verbose_name_plural = 'Recipe in carts'
+        verbose_name = 'Рецепт в корзине'
+        verbose_name_plural = 'Рецепт в корзине'
         constraints = (
             models.UniqueConstraint(
                 fields=('user', 'recipe'),
-                name='unique recipe in shoplist'),
+                name='уникальный рецепт в корзине'),
         )
 
     def __str__(self):

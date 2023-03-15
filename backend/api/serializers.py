@@ -159,7 +159,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         unique_ingredients = set(ingredients_id_list)
         if len(ingredients_id_list) > len(unique_ingredients):
             raise serializers.ValidationError(
-                'Ингридиент должен быть уникальный!'
+                'Ингредиент должен быть уникальный!'
             )
         return data
 

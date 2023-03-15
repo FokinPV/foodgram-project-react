@@ -99,10 +99,7 @@ docker-compose exec web python manage.py createsuperuser
 
 docker-compose exec web python manage.py collectstatic --no-input 
 
-## Ресурс доступен по адресу 
 
-http://158.160.55.122/admin/
-http://158.160.55.122/redoc
 
 
 
