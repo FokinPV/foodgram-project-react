@@ -54,7 +54,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             sudo docker-compose stop
-            sudo docker-compose rm web
+            sudo docker-compose rm backend
             sudo docker pull yourjesus/foodgram-frontend:v1
             touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
