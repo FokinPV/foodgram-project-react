@@ -13,31 +13,28 @@ class IngredFilter(filters.FilterSet):
 
 
 class RecipeFilter(filters.FilterSet):
-    author = filters.ModelChoiceFilter(
-        queryset=User.objects.all())
-    tags = filters.AllValuesMultipleFilter(
-        field_name='tags__slug')
-    is_favorited = filters.BooleanFilter(
-        method='filter_is_favorited',
-    )
-    is_in_shopping_cart = filters.BooleanFilter(
-        method='filter_is_in_shopping_cart',
-    )
+    """
+    Filter for recipe,
+    by tags, favorite list and shoplist.
+    """
+    tags = filters.ModelMultipleChoiceFilter(field_name='tags__slug',
+                                             to_field_name='slug',
+                                             queryset=Tag.objects.all())
+    is_favorited = filters.BooleanFilter(method='get_favorite',)
+    is_in_shopping_cart = filters.BooleanFilter(method='get_shoplist',)
 
     class Meta:
         model = Recipe
-        fields = ['is_favorited', 'is_in_shopping_cart', 'author', 'tags']
+        fields = ('is_favorited', 'author', 'tags', 'is_in_shopping_cart')
 
-        def filter_is_favorited(self, queryset, name, value):
-            pk = Favorite.objects.filter(
-                recipe=self.request.user).values('recipe_id')
-            if value:
-                return queryset.filter(pk__in=pk)
-            return queryset
+    def get_favorite(self, queryset, name, value):
+        if value:
+            return Recipe.objects.filter(
+                favorite_recipe__user=self.request.user
+            )
+        return Recipe.objects.all()
 
-        def filter_is_in_shopping_cart(self, queryset, name, value):
-            pk = ShoppingList.objects.filter(
-                user=self.request.user).values('recipe_id')
-            if value:
-                return queryset.filter(pk__in=pk)
-            return queryset
+    def get_shoplist(self, queryset, name, value):
+        if value:
+            return Recipe.objects.filter(list__user=self.request.user)
+        return Recipe.objects.all()
