@@ -1,7 +1,6 @@
 from django_filters import rest_framework as filters
 
-from users.models import User
-from recipes.models import Favorite, Ingredient, Recipe, ShoppingList
+from recipes.models import Ingredient, Recipe, Tag
 
 
 class IngredFilter(filters.FilterSet):
@@ -13,10 +12,6 @@ class IngredFilter(filters.FilterSet):
 
 
 class RecipeFilter(filters.FilterSet):
-    """
-    Filter for recipe,
-    by tags, favorite list and shoplist.
-    """
     tags = filters.ModelMultipleChoiceFilter(field_name='tags__slug',
                                              to_field_name='slug',
                                              queryset=Tag.objects.all())
