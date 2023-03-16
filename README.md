@@ -1,4 +1,4 @@
-[![workflow yamdb_final](https://github.com/FokinPV/yamdb_final/actions/workflows/yamdb_workflow.yml/badge.svg)](https://github.com/FokinPV/yamdb_final/actions/workflows/yamdb_workflow.yml)
+[![diplom foodgram](https://github.com/FokinPV/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)](https://github.com/FokinPV/foodgram-project-react/actions/workflows/foodgram_workflow.yml)
 
 # Дипломная работа - Foodgramm
 
