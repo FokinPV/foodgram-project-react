@@ -24,7 +24,7 @@ class Tag(models.Model):
         max_length=200,
     )
     color = models.CharField(
-        choices = COLOR_PALETTE,
+        choices=COLOR_PALETTE,
         max_length=7,
         verbose_name='Цвет в HEX',
     )
