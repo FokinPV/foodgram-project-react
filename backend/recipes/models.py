@@ -2,17 +2,29 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 
-CUT = 50
+
+CUT_RECIPE_NAME = 50
 User = get_user_model()
 
 
 class Tag(models.Model):
+
+    COLOR_PALETTE = [
+        ("#FFFFFF", "white", ),
+        ("#000000", "black", ),
+        ("#00B823", "green", ),
+        ("#0400B8", "blue", ),
+        ("#FF7E26", "orange", ),
+        ("#B5E61D", "olive", ),
+        ("#A349A4", "purple", ),
+    ]
     name = models.CharField(
         verbose_name='Название',
         unique=True,
         max_length=200,
     )
     color = models.CharField(
+        choices = COLOR_PALETTE,
         max_length=7,
         verbose_name='Цвет в HEX',
     )
@@ -77,7 +89,7 @@ class Recipe(models.Model):
         verbose_name='Список id тегов',
         related_name='recipes',
     )
-    cooking_time = models.PositiveIntegerField(
+    cooking_time = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1)],
         default=1,
         verbose_name='Время приготовления (в минутах)'
@@ -93,7 +105,7 @@ class Recipe(models.Model):
         verbose_name_plural = 'Рецепты'
 
     def __str__(self):
-        return self.name[:CUT]
+        return self.name[:CUT_RECIPE_NAME]
 
 
 class IngredInRecipe(models.Model):
