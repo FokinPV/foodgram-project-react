@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
-from django.db.models import F, Sum
+from django.db.models import F, Q, Sum, Exists, OuterRef
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from recipes.models import Favorite, Ingredient, Recipe, ShoppingList, Tag
@@ -17,7 +18,8 @@ from .mixins import CustomMethodViewSet, CustomViewSet
 from .serializers import (CreateUserSerializer, FavoriteSerializer,
                           FollowSerializer, GetRecipeSerializer,
                           IngredientSerializer, RecipeCreateSerializer,
-                          ShoppingListSerializer, TagSerializer)
+                          ShoppingListSerializer, TagSerializer,
+                          FollowCheckSubscribeSerializer)
 
 User = get_user_model()
 
@@ -44,7 +46,10 @@ class UsersViewSet(UserViewSet, CustomMethodViewSet):
         permission_classes=(IsAuthenticated, )
     )
     def subscribe(self, request, id=None):
-        return self.post_delete_method(Follow, FollowSerializer, request, id)
+        author = get_object_or_404(User, id=id)
+        return self.post_delete_method(Follow,
+                                       FollowCheckSubscribeSerializer,
+                                       id, Q(author=author))
 
 
 class TagViewSet(CustomViewSet):
@@ -84,21 +89,40 @@ class RecipeViewSet(viewsets.ModelViewSet, CustomMethodViewSet):
             return GetRecipeSerializer
         return RecipeCreateSerializer
 
+    def get_queryset(self):
+        queryset = (
+            Recipe.objects
+            .select_related('author')
+            .prefetch_related('tags', 'ingredients')
+        )
+        if self.request.user.is_authenticated:
+            return queryset.annotate(
+                is_favorited=Exists(Favorite.objects.filter(
+                    user=self.request.user, recipe__pk=OuterRef('pk'))
+                ),
+                is_in_shopping_cart=Exists(ShoppingList.objects.filter(
+                    user=self.request.user, recipe__pk=OuterRef('pk'))
+                )
+            )
+        return queryset
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
     @action(methods=['post', 'delete'], detail=True,
             permission_classes=(IsAuthenticated,))
     def favorite(self, request, pk=None):
+        recipe = get_object_or_404(Recipe, id=pk)
         return self.post_delete_method(Favorite, FavoriteSerializer,
-                                       request, pk)
+                                       pk, Q(recipe=recipe))
 
     @action(methods=['post', 'delete'],
             detail=True,
             permission_classes=(IsAuthenticated,))
     def shopping_cart(self, request, pk):
+        recipe = get_object_or_404(Recipe, id=pk)
         return self.post_delete_method(ShoppingList, ShoppingListSerializer,
-                                       request, pk)
+                                       pk, Q(recipe=recipe))
 
     @action(methods=['get'], detail=False,
             permission_classes=(IsAuthenticated,))

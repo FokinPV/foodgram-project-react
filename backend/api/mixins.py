@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from recipes.models import Recipe
 from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
-from users.models import Follow
 
 User = get_user_model()
 
@@ -21,44 +21,19 @@ class CustomMethodViewSet:
     """
     Кастомные методы для вьюсетов.
     """
-    def post_delete_method(self, model, serializer, request, pk):
-        user = request.user
-        if model == Follow:
-            author = get_object_or_404(User, id=pk)
-            is_subscribe = Follow.objects.filter(
-                user=user, author=author).exists()
-            if request.method == 'POST':
-                if is_subscribe or user == author:
-                    return Response({
-                        'errors': ('Вы уже подписаны на этого пользователя')
-                    }, status=status.HTTP_400_BAD_REQUEST)
-                subscribe = model.objects.create(user=user, author=author)
-                serializer = serializer(
-                    subscribe, context={'request': request}
-                )
-                return Response(serializer.data,
-                                status=status.HTTP_201_CREATED)
-            if is_subscribe:
-                model.objects.filter(user=user, author=author).delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
-            return Response({
-                'errors': 'Вы не подписаны на этого пользователя'
-            }, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            recipe = get_object_or_404(Recipe, pk=pk)
-            if request.method == 'POST':
-                if model.objects.filter(user=user, recipe=recipe).exists():
-                    return Response({'errors': 'Рецепт уже есть!'},
-                                    status=status.HTTP_400_BAD_REQUEST)
-                favorite = model.objects.create(user=user, recipe=recipe)
-                serializer = serializer(favorite,
-                                        context={'request': request})
-                return Response(serializer.data,
-                                status=status.HTTP_201_CREATED)
-            favlist = model.objects.filter(user=user, recipe=recipe)
-            if request.method == 'DELETE':
-                if not favlist.exists():
-                    return Response({'errors': 'Рецепта нет !'},
-                                    status=status.HTTP_400_BAD_REQUEST)
-                favlist.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
+    def post_delete_method(self, model, serializer, pk, filter):
+        user = self.request.user
+        recipe = get_object_or_404(Recipe, pk=pk)
+        author = get_object_or_404(User, pk=pk)
+        data = {"recipe": recipe.pk,
+                "author": author.pk,
+                "user": user.pk}
+        serializer = serializer(data=data,
+                                context={'request': self.request})
+        serializer.is_valid(raise_exception=True)
+        if self.request.method == 'POST':
+            serializer.save(user=user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        elif self.request.method == 'DELETE':
+            model.objects.filter(filter & Q(user=user)).delete()
+            return Response({'Message:': 'Объект удален'})
