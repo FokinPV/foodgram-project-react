@@ -132,7 +132,6 @@ class FavoriteSerializer(serializers.ModelSerializer):
         return obj
 
     def to_representation(self, instance):
-        print(instance)
         context = {"request": self.context.get("request")}
         return RecipeShortInfoSerializer(instance.recipe, context=context).data
 

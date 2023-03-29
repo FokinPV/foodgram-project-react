@@ -24,7 +24,7 @@ class CustomMethodViewSet:
     def post_delete_method(self, model, serializer, pk, filter):
         user = self.request.user
         recipe = get_object_or_404(Recipe, pk=pk)
-        author = get_object_or_404(User, pk=pk)
+        author = get_object_or_404(User, id=pk)
         data = {"recipe": recipe.pk,
                 "author": author.pk,
                 "user": user.pk}
