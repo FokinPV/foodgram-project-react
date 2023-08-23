@@ -1,10 +1,5 @@
 [![diplom foodgram](https://github.com/FokinPV/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)](https://github.com/FokinPV/foodgram-project-react/actions/workflows/foodgram_workflow.yml)
 
-# Дипломная работа - Foodgramm
-Сервис доступен по адресу http://51.250.65.169/
-## Доступ к админ панели:
-  admin@test.ru
-  134215nN
 ## Стек: 
 Django, django-filter djangorestframework-simplejwt, djangorestframework, PyJWT, pytest-django, pytest-pythonpath, asgiref, gunicorn, sqlparse
 
